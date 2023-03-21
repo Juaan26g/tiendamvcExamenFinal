@@ -90,6 +90,9 @@ class AdminProductController extends Controller
             } elseif ( ! Validate::dateDif($published)) {
                 array_push($errors, 'La fecha de publicación no puede ser anterior a hoy');
             }
+            if($status !== 0 && $status !== 0){
+                array_push($errors, "El producto debe tener status");
+            }
             if ($type == 1) {
                 if (empty($people)) {
                     array_push($errors, 'El público objetivo del curso es obligatorio');
@@ -233,6 +236,7 @@ class AdminProductController extends Controller
             if (! is_numeric($send)) {
                 array_push($errors, 'Los gastos de envío del producto deben de ser numéricos');
             }
+            
             if (is_numeric($price) && is_numeric($discount) && $price < $discount) {
                 array_push($errors, 'El descuento no puede ser mayor que el precio');
             }
@@ -240,6 +244,9 @@ class AdminProductController extends Controller
                 array_push($errors, 'La fecha o su formato no es correcto');
             } elseif ( ! Validate::dateDif($published)) {
                 array_push($errors, 'La fecha de publicación no puede ser anterior a hoy');
+            }
+            if($status !== 0 && $status !== 0){
+                array_push($errors, "El producto debe tener status");
             }
             if ($type == 1) {
                 if (empty($people)) {
