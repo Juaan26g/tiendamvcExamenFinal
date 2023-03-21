@@ -189,6 +189,8 @@ class AdminProductController extends Controller
         $typeConfig = $this->model->getConfig('productType');
         $statusConfig = $this->model->getConfig('productStatus');
         $catalogue = $this->model->getCatalogue();
+        $product = $this->model->getProductById($id);
+        $old_image = $product->image;
 
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
@@ -270,6 +272,10 @@ class AdminProductController extends Controller
                     $image = strtolower($image);
 
                     if (is_uploaded_file($_FILES['image']['tmp_name'])) {
+
+                        if(file_exists('img/' . $old_image)){
+                            unlink('img/' . $old_image);
+                        }
                         move_uploaded_file($_FILES['image']['tmp_name'], 'img/' . $image);
                         Validate::resizeImage($image, 240);
                     } else {
