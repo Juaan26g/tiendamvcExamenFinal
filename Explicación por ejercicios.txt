@@ -1,0 +1,39 @@
+ --------EJERCICIO 1-------
+ Para poder eliminar la imagen antigua necesitamos obtenerla
+ por lo tanto haciendo uso del metodo getUserById() del modelo AdminProduct
+ conseguimos el producto que estamos modificando y de este podemos obtener su imagen que en este caso he llamado
+ $old_image .
+ 
+ Para poder eliminarla vamos despues de las validaciones donde tratamos las imagenes después de la  validación
+y añadimos un condicional dentro del condicional que detecta la nueva imagen, este 
+comprobará que existe una imagen antigua y si es así la eliminara mediante el metodo unlink() de php .
+
+--------EJERCICIO 2-------
+Para validar la seleccion de estado tanto en la creación como en la edición de producto 
+lo que he hecho ha sido añadir un condicion que comprueba que el valor de status de un producto
+puede ser o bien 1 "activo" o bien 0 "inactivo" y por lo tanto cualquier otro valor modificando el select o en este caso
+el que le pasamos por defecto si no seleccionamos nada '', devolverán un error.
+
+--------EJERCICIO 3-------
+Primero creamos una tabla paymens con dos columnas, id y name. ahora para poder hacer que sea realmente dinamico tenemos que poder añadir,
+modificar y eliminar metodos de pago por lo tanto tenemos que hacer un crud de payments en la parte del administrador, lo que nos lleva 
+a crear un nuevo modelo AdminPayment y un nuevo controlador AdminPaymentController y sus respectivas vistas (index,create,update,delete)
+ahora en la vista paymentmode hacemos que reciba dinamicamente los metodos de pago, además como tenemos que recibir el id para añadirlo a la 
+base de datos, va a ser lo que recibamos de resultado para despues usando el metodo getPaymentById asignarle su nombre, en el momento en el que hemos seleccionado
+el metodo de pago y comprobamos que está validado si todo va bien ya está añadido a nuestro carrito el id correspondiente mediante la función 
+paymentIdToDatabase() creada en cart.
+
+--------EJERCICIO 4-------
+en close cart a la hora de cerrar el carrito usando la funcion de php date() con el formato deseado,
+conseguimos la fecha actual la cual pasamos a la base de datos(se podría hacer directamente en la consulta sin usar php)
+
+--------EJERCICIO 5-------
+el precio del producto del carrito he pensado en guardarlo o al añadir el producto al carrito o al cerrar el carrito,pero considero que es más facil
+al añadirlo al carrito así que en la funcion addProduct() de la clase cart aprovechando la consulta que define $product, sacamos el precio de esta variable,
+yo lo he llamado $productPrice que al ser $product un objeto. El precio lo sacamos de su propiedad price '$product->price', y esta la pasamos a la segunda consulta que
+la añadirá en la tabla carts en este caso en la columna product_price que acabo de crear.
+
+--------EJERCICIO 6-------
+
+vamos a todos los metodos del CartController que componen migaspan y añadimos el condicional que comprueba que si recibe un login de usuario, muestre la vista correspondiente 
+pero sino recibe ningún login de usuario mande a la raíz del proyecto que en este caso es el login de usuario.
