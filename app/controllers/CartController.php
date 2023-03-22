@@ -101,7 +101,8 @@ class CartController extends Controller
 
     public function paymentmode()
     {
-
+        $session = new Session();
+        if ($session->getLogin()) {
         $payments = $this->model->getPayments();
         $data = [
             'titulo' => 'Carrito | Forma de pago',
@@ -112,12 +113,15 @@ class CartController extends Controller
         ];
 
         $this->view('carts/paymentmode', $data);
+    } else { header('location:' . ROOT);}
     }
 
     public function verify()
     {
-        $errors = [];
+       
         $session = new Session();
+        if ($session->getLogin()) {
+        $errors = [];
         $user = $session->getUser();
         $cart = $this->model->getCart($user->id);
 
@@ -149,13 +153,14 @@ class CartController extends Controller
             ];
             $this->view('carts/paymentmode', $data);
         }
-
+    } else { header('location:' . ROOT);}
         
     }
 
     public function thanks()
     {
         $session = new Session();
+        if ($session->getLogin()) {
         $user = $session->getUser();
 
         if ($this->model->closeCart($user->id, 1)) {
@@ -181,6 +186,8 @@ class CartController extends Controller
             ];
 
             $this->view('mensaje', $data);
+            
         }
+    } else { header('location:' . ROOT);}
     }
 }
