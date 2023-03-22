@@ -28,9 +28,10 @@ class Cart
         $query = $this->db->prepare($sql);
         $query->execute([':id' => $product_id]);
         $product = $query->fetch(PDO::FETCH_OBJ);
+        $productPrice = $product->price;
 
-        $sql2 = 'INSERT INTO carts(state, user_id, product_id, quantity, discount, send, date)
-                 VALUES (:state, :user_id, :product_id, :quantity, :discount, :send, :date)';
+        $sql2 = 'INSERT INTO carts(state, user_id, product_id, quantity, discount, send, date, product_price )
+                 VALUES (:state, :user_id, :product_id, :quantity, :discount, :send, :date, :product_price)';
         $query2 = $this->db->prepare($sql2);
         $params2 = [
             ':state' => 0,
@@ -40,6 +41,8 @@ class Cart
             ':discount' => $product->discount,
             ':send' => $product->send,
             ':date' => date('Y-m-d H:i:s'),
+            ':product_price' => $productPrice,
+            
         ];
         $query2->execute($params2);
         return $query2->rowCount();
