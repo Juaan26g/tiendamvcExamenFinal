@@ -27,7 +27,6 @@ class CartController extends Controller
             ];
 
             $this->view('carts/index', $data);
-
         } else {
             header('location:' . ROOT);
         }
@@ -53,9 +52,9 @@ class CartController extends Controller
             $user_id = $_POST['user_id'];
 
             for ($i = 0; $i < $rows; $i++) {
-                $product_id = $_POST['i'.$i];
-                $quantity = $_POST['c'.$i];
-                if ( ! $this->model->update($user_id, $product_id, $quantity)) {
+                $product_id = $_POST['i' . $i];
+                $quantity = $_POST['c' . $i];
+                if (!$this->model->update($user_id, $product_id, $quantity)) {
                     array_push($errors, 'Error al actualizar el producto');
                 }
             }
@@ -67,7 +66,7 @@ class CartController extends Controller
     {
         $errors = [];
 
-        if( ! $this->model->delete($product, $user)) {
+        if (!$this->model->delete($product, $user)) {
             array_push($errors, 'Error al borrar el registro del carrito');
         }
 
@@ -89,7 +88,6 @@ class CartController extends Controller
                 'data' => $user,
             ];
             $this->view('carts/address', $data);
-
         } else {
             $data = [
                 'titulo' => 'Carrito | Checkout',
@@ -103,10 +101,14 @@ class CartController extends Controller
 
     public function paymentmode()
     {
+
+        $payments = $this->model->getPayments();
         $data = [
             'titulo' => 'Carrito | Forma de pago',
             'subtitle' => 'Checkout | Forma de pago',
             'menu' => true,
+            'payments' => $payments,
+
         ];
 
         $this->view('carts/paymentmode', $data);
@@ -114,20 +116,41 @@ class CartController extends Controller
 
     public function verify()
     {
+        $errors = [];
         $session = new Session();
         $user = $session->getUser();
         $cart = $this->model->getCart($user->id);
-        $payment = $_POST['payment'] ?? '';
 
-        $data = [
-            'titulo' => 'Carrito | Verificar los datos',
-            'menu' => true,
-            'payment' => $payment,
-            'user' => $user,
-            'data' => $cart,
-        ];
+        $payment_id = $_POST['payment'] ?? '';
+        $this->model->paymentIdToDatabase($payment_id, $user->id, 0);
+        $payment = $this->model->getPaymentsById($payment_id);
+        if (!empty($_POST['payment'])) {
+            $data = [
+                'titulo' => 'Carrito | Verificar los datos',
+                'menu' => true,
+                'payment' => $payment->name,
+                'user' => $user,
+                'data' => $cart,
+            ];
+    
+            $this->view('carts/verify', $data);
+        } else {
+            array_push($errors, 'Seleccione un metodo de pago para continuar');
 
-        $this->view('carts/verify', $data);
+
+            $payments = $this->model->getPayments();
+            $data = [
+                'titulo' => 'Carrito | Forma de pago',
+                'subtitle' => 'Checkout | Forma de pago',
+                'menu' => true,
+                'payments' => $payments,
+                'errors' => $errors
+
+            ];
+            $this->view('carts/paymentmode', $data);
+        }
+
+        
     }
 
     public function thanks()
@@ -144,7 +167,6 @@ class CartController extends Controller
             ];
 
             $this->view('carts/thanks', $data);
-
         } else {
 
             $data = [
@@ -159,9 +181,6 @@ class CartController extends Controller
             ];
 
             $this->view('mensaje', $data);
-
         }
-
-
     }
 }

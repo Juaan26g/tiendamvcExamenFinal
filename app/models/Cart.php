@@ -83,13 +83,41 @@ class Cart
         return $query->execute($params);
     }
 
-    public function closeCart($id, $state)
+    public function getPayments()
+    {
+        $sql = 'SELECT * FROM payments';
+        $query = $this->db->prepare($sql);
+        $query->execute();
+
+        return $query->fetchAll(PDO::FETCH_OBJ);
+    }
+    public function getPaymentsById($id)
+    {
+        $sql = 'SELECT * FROM payments WHERE id=:id';
+        $query = $this->db->prepare($sql);
+        $query->execute([':id' => $id]);
+
+        return $query->fetch();
+    }
+public function paymentIdToDatabase($payment_id, $id, $state)
+{   
+    $sql = 'UPDATE carts SET payment_id = :payment_id WHERE user_id = :user_id AND state = :state';
+    $query = $this->db->prepare($sql);
+    $params = [
+        ':payment_id' => $payment_id,
+        ':user_id' => $id,
+        ':state' => $state,
+    ];
+    $query->execute($params);
+}
+    public function closeCart($id, $state )
     {
         $sql = 'UPDATE carts SET state=:state WHERE user_id=:user_id AND state=0';
         $query = $this->db->prepare($sql);
         $params = [
             ':user_id' => $id,
             ':state' => $state,
+            
         ];
         return $query->execute($params);
     }
