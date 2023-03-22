@@ -112,11 +112,13 @@ public function paymentIdToDatabase($payment_id, $id, $state)
 }
     public function closeCart($id, $state )
     {
-        $sql = 'UPDATE carts SET state=:state WHERE user_id=:user_id AND state=0';
+        $date = date('Y-m-d H:i:s');
+        $sql = 'UPDATE carts SET state=:state, date=:date WHERE user_id=:user_id AND state=0';
         $query = $this->db->prepare($sql);
         $params = [
             ':user_id' => $id,
             ':state' => $state,
+            ':date' => $date,
             
         ];
         return $query->execute($params);
